@@ -1,0 +1,226 @@
+Clearing the configuration file: /config/log/logrotate.conf
+Clearing the configuration file: /config/log/rsyslog_docker.conf
+Generated configuration file: /config/portal/nginx.conf
+Generated configuration file: /config/log/logrotate.conf
+Generated configuration file: /config/log/rsyslog_docker.conf
+Traceback (most recent call last):
+  File "main.py", line 15, in <module>
+    cli()
+  File "/usr/lib/python3.6/site-packages/click/core.py", line 829, in __call__
+    return self.main(*args, **kwargs)
+  File "/usr/lib/python3.6/site-packages/click/core.py", line 782, in main
+    rv = self.invoke(ctx)
+  File "/usr/lib/python3.6/site-packages/click/core.py", line 1259, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/usr/lib/python3.6/site-packages/click/core.py", line 1066, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/usr/lib/python3.6/site-packages/click/core.py", line 610, in invoke
+    return callback(*args, **kwargs)
+  File "/usr/src/app/commands/prepare.py", line 49, in prepare
+    prepare_nginx(config_dict)
+  File "/usr/src/app/utils/nginx.py", line 23, in prepare_nginx
+    render_nginx_template(config_dict)
+  File "/usr/src/app/utils/nginx.py", line 56, in render_nginx_template
+    prepare_nginx_certs(config_dict['cert_key_path'], config_dict['cert_path'])
+  File "/usr/src/app/utils/nginx.py", line 42, in prepare_nginx_certs
+    shutil.copy2(host_ngx_cert_key_path, real_key_path)
+  File "/usr/lib/python3.6/shutil.py", line 263, in copy2
+    copyfile(src, dst, follow_symlinks=follow_symlinks)
+  File "/usr/lib/python3.6/shutil.py", line 120, in copyfile
+    with open(src, 'rb') as fsrc:
+FileNotFoundError: [Errno 2] No such file or directory: '/hostfs/harbor_registry.key'
+[centos@harbor harbor]$ cd /etc/pki/tls/certs
+[centos@harbor certs]$ ls
+ca-bundle.crt  ca-bundle.trust.crt  harbor_certs.cnf  harbor_registry.crt  harbor_registry.csr  harbor_registry.key  privkey.pem
+[centos@harbor certs]$ sudo cp harbor_registry.crt /home/centos/harbor
+[centos@harbor certs]$ sudo cp harbor_registry.crt /home/centos/harbor/harbor_registry.crt
+[centos@harbor certs]$ sudo cp harbor_registry.key /home/centos/harbor/harbor_registry.key
+[centos@harbor certs]$ cd /home/centos/harbor/
+[centos@harbor harbor]$ ls -ltr
+total 48
+-rwxrwxr-x. 1 centos centos  1881 Jan  9 00:02 prepare
+-rwxrwxr-x. 1 centos centos  2523 Jan  9 00:02 install.sh
+-rwxrwxr-x. 1 centos centos  8136 Jan  9 00:02 harbor.yml.tmpl
+-rwxrwxr-x. 1 centos centos  3361 Jan  9 00:02 common.sh
+-rw-rw-r--. 1 centos centos 11347 Jan  9 00:03 LICENSE
+drwxr-xr-x. 3 root   root      20 Jan 21 11:33 common
+-rwxr-xr-x. 1 root   root    8135 Jan 21 11:58 harbor.yml
+drwxr-xr-x. 2 root   root      24 Jan 21 12:02 input
+-rw-r--r--. 1 root   root    1992 Jan 21 12:04 harbor_registry.crt
+-rw-------. 1 root   root    3272 Jan 21 12:05 harbor_registry.key
+[centos@harbor harbor]$ sudo nano harbor.yml
+[centos@harbor harbor]$ sudo ./install.sh
+
+[Step 0]: checking if docker is installed ...
+
+Note: docker version: 20.10.2
+
+[Step 1]: checking docker-compose is installed ...
+
+Note: docker-compose version: 1.28.0
+
+
+[Step 2]: preparing environment ...
+
+[Step 3]: preparing harbor configs ...
+prepare base dir is set to /home/centos/harbor
+Clearing the configuration file: /config/portal/nginx.conf
+Clearing the configuration file: /config/log/logrotate.conf
+Clearing the configuration file: /config/log/rsyslog_docker.conf
+Generated configuration file: /config/portal/nginx.conf
+Generated configuration file: /config/log/logrotate.conf
+Generated configuration file: /config/log/rsyslog_docker.conf
+Generated configuration file: /config/nginx/nginx.conf
+Generated configuration file: /config/core/env
+Generated configuration file: /config/core/app.conf
+Generated configuration file: /config/registry/config.yml
+Generated configuration file: /config/registryctl/env
+Generated configuration file: /config/registryctl/config.yml
+Generated configuration file: /config/db/env
+Generated configuration file: /config/jobservice/env
+Generated configuration file: /config/jobservice/config.yml
+Generated and saved secret to file: /data/secret/keys/secretkey
+Successfully called func: create_root_cert
+Generated configuration file: /compose_location/docker-compose.yml
+Clean up the input dir
+
+
+
+[Step 4]: starting Harbor ...
+Building with native build. Learn about native build in Compose here: https://docs.docker.com/go/compose-native-build/
+Creating network "harbor_harbor" with the default driver
+Pulling log (goharbor/harbor-log:v2.1.3)...
+v2.1.3: Pulling from goharbor/harbor-log
+522a057091dd: Already exists
+9bb02ea23602: Pull complete
+569baec60a22: Pull complete
+52679abdac84: Pull complete
+ae0e49db173a: Pull complete
+a938304988eb: Pull complete
+c06118f59c39: Pull complete
+6475ee1d74f2: Pull complete
+238d3c48906b: Pull complete
+Digest: sha256:14901d95bc63540f99acfc6c0a6d91246f18654cd9db10275696a39c57ffede2
+Status: Downloaded newer image for goharbor/harbor-log:v2.1.3
+Pulling registry (goharbor/registry-photon:v2.1.3)...
+v2.1.3: Pulling from goharbor/registry-photon
+522a057091dd: Already exists
+d79e24084634: Pull complete
+177d19c3d9b5: Pull complete
+243a4c434d0a: Pull complete
+f2f0abb8c1c9: Pull complete
+ba102927d0f7: Pull complete
+Digest: sha256:89840fb19183c862dfa298ebd867358cef65f773204e6fa3db7b53a68c59dc0e
+Status: Downloaded newer image for goharbor/registry-photon:v2.1.3
+Pulling registryctl (goharbor/harbor-registryctl:v2.1.3)...
+v2.1.3: Pulling from goharbor/harbor-registryctl
+522a057091dd: Already exists
+049f8a731be3: Pull complete
+01e8f6ad6687: Pull complete
+4526af58d8d1: Pull complete
+67d46670102e: Pull complete
+3d7f853d9ca1: Pull complete
+62001f7ca49d: Pull complete
+Digest: sha256:fb0113c857d2b2a852ccfcb5751735904976865448b1a14b73d3b3f11ef7ed66
+Status: Downloaded newer image for goharbor/harbor-registryctl:v2.1.3
+Pulling postgresql (goharbor/harbor-db:v2.1.3)...
+v2.1.3: Pulling from goharbor/harbor-db
+522a057091dd: Already exists
+666a1c43ef4f: Pull complete
+1388d0f8b05d: Pull complete
+ae637b43ad6f: Pull complete
+957c02b185a3: Pull complete
+2c2593a1cd0d: Pull complete
+73b231b358e6: Pull complete
+51329295d56f: Pull complete
+c20f04561793: Pull complete
+Digest: sha256:d63d7203b3549f6ed8c841a35c55ec292cff4a3e4f3fd5e2dfc180f946c45b0d
+Status: Downloaded newer image for goharbor/harbor-db:v2.1.3
+Pulling portal (goharbor/harbor-portal:v2.1.3)...
+v2.1.3: Pulling from goharbor/harbor-portal
+522a057091dd: Already exists
+b30f40700fe7: Pull complete
+ae6af07db703: Pull complete
+fefdc64d7142: Pull complete
+20b59e63f820: Pull complete
+c78824803b70: Pull complete
+bc576c021c2d: Pull complete
+506368e39686: Pull complete
+Digest: sha256:0750df295c6a4aba7f8c74e1264229b72abbc8e4dbb8738bc076c17caa98165b
+Status: Downloaded newer image for goharbor/harbor-portal:v2.1.3
+Pulling redis (goharbor/redis-photon:v2.1.3)...
+v2.1.3: Pulling from goharbor/redis-photon
+522a057091dd: Already exists
+2050fcdd9053: Pull complete
+dda594e882bf: Pull complete
+3e9cc0e468e4: Pull complete
+84913ddccbaa: Pull complete
+Digest: sha256:0cfef1ac4da4bd6ca45de619b1e53bf7412083e8f8da77140307a84927096e91
+Status: Downloaded newer image for goharbor/redis-photon:v2.1.3
+Pulling core (goharbor/harbor-core:v2.1.3)...
+v2.1.3: Pulling from goharbor/harbor-core
+522a057091dd: Already exists
+a80291036d41: Pull complete
+237e54c2cafb: Pull complete
+61345de5753d: Pull complete
+0e1262610af6: Pull complete
+f995a7d803ae: Pull complete
+a16d59b95b4e: Pull complete
+ec9f8f6299cf: Pull complete
+e9dab2ede45d: Pull complete
+e0585cff602a: Pull complete
+Digest: sha256:2d15dd5f59052ac4fb6a78596685955eff56ff5b64d4bce640fea879a9133a9b
+Status: Downloaded newer image for goharbor/harbor-core:v2.1.3
+Pulling jobservice (goharbor/harbor-jobservice:v2.1.3)...
+v2.1.3: Pulling from goharbor/harbor-jobservice
+522a057091dd: Already exists
+b5517ece6f40: Pull complete
+91c7e526f2eb: Pull complete
+9c62072867ac: Pull complete
+0efc2d024dfc: Pull complete
+7dd066ae3ea8: Pull complete
+Digest: sha256:33b30548eebef7ae4d8355f224e8975b6bf24345c9be4a466b166aa5e1177611
+Status: Downloaded newer image for goharbor/harbor-jobservice:v2.1.3
+Pulling proxy (goharbor/nginx-photon:v2.1.3)...
+v2.1.3: Pulling from goharbor/nginx-photon
+522a057091dd: Already exists
+3958ed6ca9f3: Pull complete
+Digest: sha256:5434b7dc96b3db7da8bc90f265f35d8e8946c7731a1856b084209bb1cb6a09e9
+Status: Downloaded newer image for goharbor/nginx-photon:v2.1.3
+Creating harbor-log ... done
+Creating redis         ... done
+Creating harbor-portal ... done
+Creating harbor-db     ... done
+Creating registry      ... done
+Creating registryctl   ... done
+Creating harbor-core   ... done
+Creating harbor-jobservice ... done
+Creating nginx             ... done
+✔ ----Harbor has been installed and started successfully.----
+[centos@harbor harbor]$
+
+
+[centos@harbor harbor]$ curl http://harbor.pippolab.vr
+<html>
+<head><title>308 Permanent Redirect</title></head>
+<body>
+<center><h1>308 Permanent Redirect</h1></center>
+<hr><center>nginx/1.16.1</center>
+</body>
+</html>
+[centos@harbor harbor]$
+
+sudo systemctl enable /usr/lib/systemd/system/docker.service
+
+
+[Unit]
+Description=Harbor Service
+After=network.target docker.service
+[Service]
+Type=simple
+WorkingDirectory=/PATH/TO/harbor
+ExecStart=/usr/local/bin/docker-compose -f /PATH/TO/harbor/docker-compose.yml$
+ExecStop=/usr/local/bin/docker-compose -f /PATH/TO/harbor/docker-compose.yml $
+RemainAfterExit=yes
+[Install]
+WantedBy=multi-user.target

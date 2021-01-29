@@ -1,0 +1,753 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+192.168.146.131         k8master.pippolab.vr    k8master
+192.168.146.134         k8node1.pippolab.vr     k8node1
+192.168.146.135         k8node2.pippolab.vr     k8node2
+192.168.146.136         harbor.pippolab.vr      harbor
+
+
+sudo yum groupinstall "Server with GUI" --skip-broken --allowerasing --nobest
+systemctl set-default graphical
+reboot
+
+
+cat ;;EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 0
+net.bridge.bridge-nf-call-iptables = 0
+EOF
+
+
+sudo kubeadm join 192.168.147.133:6443 --token kd4cit.hy4eqtoj2fp4qny1 \
+    --discovery-token-ca-cert-hash sha256:65de00fb70dc2a834c71b44db409a9c2f8f576acc430d6b94ca803a335046156
+
+
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sudo sysctl –system
+lsmod | grep br_netfilter
+modprobe br_netfilter
+lsmod | grep br_netfilter
+
+cat <<EOF>> /etc/hosts
+192.168.146.131         k8master         k8master.pippolab.vr
+192.168.146.134         k8node1          knode1.pippolab.vr
+192.168.146.135         k8node2          knode2.pippolab.vr
+192.168.146.136			harbor			 harbor.pippolab.vr	
+EOF
+
+https://download.docker.com/linux/centos/8/x86_64/stable/Packages/containerd.io-1.4.3-3.1.el8.x86_64.rpm
+
+1
+2
+setenforce 0
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+Kubernetes doesn’t like swap, so if you have it in /etc/fstab, disable the swap.
+
+1
+2
+swapoff -a
+sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+[centos@k8master ~]$ kubectl get nodes
+NAME                   STATUS     ROLES                  AGE   VERSION
+k8master.pippolab.vr   NotReady   control-plane,master   16h   v1.20.2
+[centos@k8master ~]$ export kubever=$(kubectl version | base64 | tr -d '\n')
+[centos@k8master ~]$ kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever
+> ^C
+[centos@k8master ~]$ kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
+serviceaccount/weave-net created
+clusterrole.rbac.authorization.k8s.io/weave-net created
+clusterrolebinding.rbac.authorization.k8s.io/weave-net created
+role.rbac.authorization.k8s.io/weave-net created
+rolebinding.rbac.authorization.k8s.io/weave-net created
+daemonset.apps/weave-net created
+[centos@k8master ~]$ kubectl get nodes
+NAME                   STATUS   ROLES                  AGE   VERSION
+k8master.pippolab.vr   Ready    control-plane,master   16h   v1.20.2
+[centos@k8master ~]$
+
+
+[centos@k8node1 ~]$ sudo swapoff -a
+[centos@k8node1 ~]$ sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+[centos@k8node1 ~]$ sudo kubeadm join 192.168.147.133:6443 --token kd4cit.hy4eqtoj2fp4qny1 --discovery-token-ca-cert-hash sha256:65de00fb70dc2a834c71b44db409a9c2f8f576acc430d6b94ca803a335046156
+[preflight] Running pre-flight checks
+        [WARNING IsDockerSystemdCheck]: detected "cgroupfs" as the Docker cgroup driver. The recommended driver is "systemd". Please follow the guide at https://kubernetes.io/docs/setup/cri/
+        [WARNING FileExisting-tc]: tc not found in system path
+        [WARNING SystemVerification]: this Docker version is not on the list of validated versions: 20.10.2. Latest validated version: 19.03
+        [WARNING Hostname]: hostname "k8node1.pippolab.vr" could not be reached
+        [WARNING Hostname]: hostname "k8node1.pippolab.vr": lookup k8node1.pippolab.vr on 192.168.147.2:53: no such host
+[preflight] Reading configuration from the cluster...
+[preflight] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
+[kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
+[kubelet-start] Writing kubelet environment file with flags to file "/var/lib/kubelet/kubeadm-flags.env"
+[kubelet-start] Starting the kubelet
+[kubelet-start] Waiting for the kubelet to perform the TLS Bootstrap...
+
+This node has joined the cluster:
+* Certificate signing request was sent to apiserver and a response was received.
+* The Kubelet was informed of the new secure connection details.
+
+Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
+
+[centos@k8master ~]$ kubectl get nodes
+NAME                   STATUS   ROLES                  AGE   VERSION
+k8master.pippolab.vr   Ready    control-plane,master   16h   v1.20.2
+k8node1.pippolab.vr    Ready    <none>                 47s   v1.20.2
+[centos@k8master ~]$
+
+[centos@k8master ~]$ kubectl get nodes
+NAME                   STATUS   ROLES                  AGE     VERSION
+k8master.pippolab.vr   Ready    control-plane,master   16h     v1.20.2
+k8node1.pippolab.vr    Ready    <none>                 28m     v1.20.2
+k8node2.pippolab.vr    Ready    <none>                 8m45s   v1.20.2
+[centos@k8master ~]$
+
+Installed:
+  checkpolicy-2.9-1.el8.x86_64                                   container-selinux-2:2.144.0-1.module_el8.3.0+475+c50ce30b.noarch
+  containerd.io-1.4.3-3.1.el8.x86_64                             policycoreutils-python-utils-2.9-9.el8.noarch
+  python3-audit-3.0-0.17.20191104git1c2f876.el8.x86_64           python3-libsemanage-2.9-3.el8.x86_64
+  python3-policycoreutils-2.9-9.el8.noarch                       python3-setools-4.3.0-2.el8.x86_64
+
+Complete!
+[centos@k8node2 ~]$
+
+[centos@k8master ~]$ kubectl get pod -A
+NAMESPACE     NAME                                           READY   STATUS    RESTARTS   AGE
+kube-system   coredns-74ff55c5b-5ch8m                        1/1     Running   0          16h
+kube-system   coredns-74ff55c5b-fpqrv                        1/1     Running   0          16h
+kube-system   etcd-k8master.pippolab.vr                      1/1     Running   1          16h
+kube-system   kube-apiserver-k8master.pippolab.vr            1/1     Running   1          16h
+kube-system   kube-controller-manager-k8master.pippolab.vr   1/1     Running   1          16h
+kube-system   kube-proxy-bsfjh                               1/1     Running   0          14m
+kube-system   kube-proxy-f57r9                               1/1     Running   0          34m
+kube-system   kube-proxy-n4xcs                               1/1     Running   1          16h
+kube-system   kube-scheduler-k8master.pippolab.vr            1/1     Running   1          16h
+kube-system   weave-net-4tnm2                                2/2     Running   1          34m
+kube-system   weave-net-7rbbl                                2/2     Running   0          40m
+kube-system   weave-net-lvffc                                2/2     Running   1          14m
+
+[centos@k8master ~]$ kubectl get pods -n kube-system -l name=weave-net
+NAME              READY   STATUS    RESTARTS   AGE
+weave-net-4tnm2   2/2     Running   1          52m
+weave-net-7rbbl   2/2     Running   0          57m
+weave-net-lvffc   2/2     Running   1          32m
+[centos@k8master ~]$
+
+
+[centos@k8master ~]$ kubectl get pods -n kube-system -l name=weave-net -o wide
+NAME              READY   STATUS    RESTARTS   AGE   IP                NODE                   NOMINATED NODE   READINESS GATES
+weave-net-4tnm2   2/2     Running   1          50m   192.168.146.134   k8node1.pippolab.vr    <none>           <none>
+weave-net-7rbbl   2/2     Running   0          55m   192.168.146.131   k8master.pippolab.vr   <none>           <none>
+weave-net-lvffc   2/2     Running   1          30m   192.168.146.135   k8node2                <none>           <none>
+[centos@k8master ~]$
+
+[centos@k8master ~]$ git clone https://github.com/intel/multus-cni.git && cd multus-cni
+Cloning into 'multus-cni'...
+remote: Enumerating objects: 32202, done.
+remote: Total 32202 (delta 0), reused 0 (delta 0), pack-reused 32202
+Receiving objects: 100% (32202/32202), 42.54 MiB | 3.78 MiB/s, done.
+Resolving deltas: 100% (13388/13388), done.
+
+[centos@k8master multus-cni]$ cat ./images/multus-daemonset.yml | kubectl apply -f -
+customresourcedefinition.apiextensions.k8s.io/network-attachment-definitions.k8s.cni.cncf.io created
+clusterrole.rbac.authorization.k8s.io/multus created
+clusterrolebinding.rbac.authorization.k8s.io/multus created
+serviceaccount/multus created
+configmap/multus-cni-config created
+daemonset.apps/kube-multus-ds-amd64 created
+daemonset.apps/kube-multus-ds-ppc64le created
+daemonset.apps/kube-multus-ds-arm64v8 created
+[centos@k8master multus-cni]$
+
+[centos@k8master multus-cni]$ kubectl get pods --all-namespaces | grep -i multus
+kube-system   kube-multus-ds-amd64-5qxzq                     1/1     Running   0          3m5s
+kube-system   kube-multus-ds-amd64-b9xpg                     1/1     Running   0          3m5s
+kube-system   kube-multus-ds-amd64-m7lrx                     1/1     Running   0          3m5s
+
+[centos@k8master multus-cni]$ kubectl get pod -A
+NAMESPACE     NAME                                           READY   STATUS    RESTARTS   AGE
+kube-system   coredns-74ff55c5b-5ch8m                        1/1     Running   0          17h
+kube-system   coredns-74ff55c5b-fpqrv                        1/1     Running   0          17h
+kube-system   etcd-k8master.pippolab.vr                      1/1     Running   1          17h
+kube-system   kube-apiserver-k8master.pippolab.vr            1/1     Running   1          17h
+kube-system   kube-controller-manager-k8master.pippolab.vr   1/1     Running   2          17h
+kube-system   kube-multus-ds-amd64-5qxzq                     1/1     Running   0          4m23s
+kube-system   kube-multus-ds-amd64-b9xpg                     1/1     Running   0          4m23s
+kube-system   kube-multus-ds-amd64-m7lrx                     1/1     Running   0          4m23s
+kube-system   kube-proxy-bsfjh                               1/1     Running   0          43m
+kube-system   kube-proxy-f57r9                               1/1     Running   0          64m
+kube-system   kube-proxy-n4xcs                               1/1     Running   1          17h
+kube-system   kube-scheduler-k8master.pippolab.vr            1/1     Running   2          17h
+kube-system   weave-net-4tnm2                                2/2     Running   1          64m
+kube-system   weave-net-7rbbl                                2/2     Running   0          69m
+kube-system   weave-net-lvffc                                2/2     Running   1          43m
+
+
+[centos@k8master multus-cni]$ kubectl get pods -n kube-system -l name=multus -o wide
+NAME                         READY   STATUS    RESTARTS   AGE    IP                NODE                   NOMINATED NODE   READINESS GATES
+kube-multus-ds-amd64-8k79k   1/1     Running   0          2m5s   192.168.146.131   k8master.pippolab.vr   <none>           <none>
+kube-multus-ds-amd64-s55p8   1/1     Running   0          2m5s   192.168.146.134   k8node1.pippolab.vr    <none>           <none>
+kube-multus-ds-amd64-sdhl6   1/1     Running   0          2m5s   192.168.146.135   k8node2                <none>           <none>
+
+
+
+
+The main NIC will usually have a default route. So:
+
+ip -o -4 route show to default
+The NIC:
+
+ip -o -4 route show to default | awk '{print $5}'
+The gateway:
+
+ip -o -4 route show to default | awk '{print $3}'
+
+[centos@k8node1 ~]$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 00:0c:29:5b:08:a3 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.146.134/24 brd 192.168.146.255 scope global dynamic noprefixroute ens33
+       valid_lft 1637sec preferred_lft 1637sec
+    inet6 fe80::dd9d:7f33:5ab9:1246/64 scope link dadfailed tentative noprefixroute
+       valid_lft forever preferred_lft forever
+    inet6 fe80::71e5:ec02:c20:556f/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 00:0c:29:5b:08:ad brd ff:ff:ff:ff:ff:ff
+    inet 192.168.147.137/24 brd 192.168.147.255 scope global dynamic noprefixroute ens34
+       valid_lft 1637sec preferred_lft 1637sec
+    inet6 fe80::101c:3cfb:47de:3d46/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+4: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+    link/ether 02:42:84:4f:99:35 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+5: datapath: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1376 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/ether 7e:99:43:38:97:05 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::7c99:43ff:fe38:9705/64 scope link
+       valid_lft forever preferred_lft forever
+7: weave: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1376 qdisc noqueue state UP group default qlen 1000
+    link/ether 32:7b:dd:c3:76:cb brd ff:ff:ff:ff:ff:ff
+    inet 10.44.0.0/12 brd 10.47.255.255 scope global weave
+       valid_lft forever preferred_lft forever
+    inet6 fe80::307b:ddff:fec3:76cb/64 scope link
+       valid_lft forever preferred_lft forever
+9: vethwe-datapath@vethwe-bridge: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1376 qdisc noqueue master datapath state UP group default
+    link/ether e6:16:4c:69:39:4f brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::e416:4cff:fe69:394f/64 scope link
+       valid_lft forever preferred_lft forever
+10: vethwe-bridge@vethwe-datapath: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1376 qdisc noqueue master weave state UP group default
+    link/ether ee:0c:97:61:e1:c7 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::ec0c:97ff:fe61:e1c7/64 scope link
+       valid_lft forever preferred_lft forever
+11: vxlan-6784: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 65535 qdisc noqueue master datapath state UNKNOWN group default qlen 1000
+    link/ether 02:6e:1c:df:72:db brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::6e:1cff:fedf:72db/64 scope link
+       valid_lft forever preferred_lft forever
+
+
+cat <<EOF | kubectl create -f -
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: macvlan-conf
+spec:
+  config: '{
+      "cniVersion": "0.3.0",
+      "type": "macvlan",
+      "master": "ens34",
+      "mode": "bridge",
+      "ipam": {
+        "type": "host-local",
+        "subnet": "192.168.148.0/24",
+        "rangeStart": "192.168.148.200",
+        "rangeEnd": "192.168.148.216",
+        "routes": [
+          { "dst": "0.0.0.0/0" }
+        ],
+        "gateway": "192.168.148.1"
+      }
+    }'
+EOF
+networkattachmentdefinition.k8s.cni.cncf.io/macvlan-conf created
+
+
+[centos@k8master net.d]$ kubectl get network-attachment-definitions
+NAME           AGE
+macvlan-conf   24s
+[centos@k8master net.d]$ kubectl describe network-attachment-definitions macvlan-conf
+Name:         macvlan-conf
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+API Version:  k8s.cni.cncf.io/v1
+Kind:         NetworkAttachmentDefinition
+Metadata:
+  Creation Timestamp:  2021-01-21T10:33:23Z
+  Generation:          1
+  Managed Fields:
+    API Version:  k8s.cni.cncf.io/v1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:spec:
+        .:
+        f:config:
+    Manager:         kubectl-create
+    Operation:       Update
+    Time:            2021-01-21T10:33:23Z
+  Resource Version:  10721
+  UID:               244976a1-8eec-4e69-ba2c-f3d545e2f17b
+Spec:
+  Config:  { "cniVersion": "0.3.0", "type": "macvlan", "master": "ens34", "mode": "bridge", "ipam": { "type": "host-local", "subnet": "192.168.148.0/24", "rangeStart": "192.168.148.200", "rangeEnd": "192.168.148.216", "routes": [ { "dst": "0.0.0.0/0" } ], "gateway": "192.168.148.1" } }
+Events:    <none>
+
+
+[centos@k8master net.d]$ cat <<EOF | kubectl create -f -
+> apiVersion: v1
+> kind: Pod
+> metadata:
+>   name: samplepod
+>   annotations:
+>     k8s.v1.cni.cncf.io/networks: macvlan-conf
+> spec:
+>   containers:
+>   - name: samplepod
+>     command: ["/bin/sh", "-c", "trap : TERM INT; sleep infinity & wait"]
+>     image: alpine
+> EOF
+pod/samplepod created
+[centos@k8master net.d]$ kubectl exec -it samplepod -- ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+2: net1@if3: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue state UP
+    link/ether 16:d5:8d:20:99:9e brd ff:ff:ff:ff:ff:ff
+    inet 192.168.148.200/24 brd 192.168.148.255 scope global net1
+       valid_lft forever preferred_lft forever
+12: eth0@if13: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1376 qdisc noqueue state UP
+    link/ether 96:cc:03:1b:87:bf brd ff:ff:ff:ff:ff:ff
+    inet 10.44.0.1/12 brd 10.47.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+[centos@k8master net.d]$
+
+
+
+cat <<EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: samplepod
+  annotations:
+    k8s.v1.cni.cncf.io/networks: macvlan-conf
+spec:
+  containers:
+  - name: samplepod
+    command: ["/bin/ash", "-c", "trap : TERM INT; sleep infinity & wait"]
+    image: alpine
+EOF
+
+[centos@k8master net.d]$ kubectl describe pod samplepod
+Name:         samplepod
+Namespace:    default
+Priority:     0
+Node:         k8node1.pippolab.vr/192.168.146.134
+Start Time:   Thu, 21 Jan 2021 05:55:50 -0500
+Labels:       <none>
+Annotations:  k8s.v1.cni.cncf.io/network-status:
+                [{
+                    "name": "",
+                    "ips": [
+                        "10.44.0.1"
+                    ],
+                    "default": true,
+                    "dns": {}
+                },{
+                    "name": "default/macvlan-conf",
+                    "interface": "net1",
+                    "ips": [
+                        "192.168.148.200"
+                    ],
+                    "mac": "16:d5:8d:20:99:9e",
+                    "dns": {}
+                }]
+              k8s.v1.cni.cncf.io/networks: macvlan-conf
+              k8s.v1.cni.cncf.io/networks-status:
+                [{
+                    "name": "",
+                    "ips": [
+                        "10.44.0.1"
+                    ],
+                    "default": true,
+                    "dns": {}
+                },{
+                    "name": "default/macvlan-conf",
+                    "interface": "net1",
+                    "ips": [
+                        "192.168.148.200"
+                    ],
+                    "mac": "16:d5:8d:20:99:9e",
+                    "dns": {}
+                }]
+Status:       Running
+IP:           10.44.0.1
+IPs:
+  IP:  10.44.0.1
+Containers:
+  samplepod:
+    Container ID:  docker://9a76062c90825f87493c9f6ac8b3ccaec0346089cc68047a65442d82cc0f3ad5
+    Image:         alpine
+    Image ID:      docker-pullable://alpine@sha256:d9a7354e3845ea8466bb00b22224d9116b183e594527fb5b6c3d30bc01a20378
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/sh
+      -c
+      trap : TERM INT; sleep infinity & wait
+    State:          Running
+      Started:      Thu, 21 Jan 2021 05:55:59 -0500
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-4rm9x (ro)
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:
+  default-token-4rm9x:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-4rm9x
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                 node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason       Age   From               Message
+  ----     ------       ----  ----               -------
+  Normal   Scheduled    10m   default-scheduler  Successfully assigned default/samplepod to k8node1.pippolab.vr
+  Warning  FailedMount  10m   kubelet            MountVolume.SetUp failed for volume "default-token-4rm9x" : failed to sync secret cache: timed out waiting for the condition
+  Normal   Pulling      10m   kubelet            Pulling image "alpine"
+  Normal   Pulled       10m   kubelet            Successfully pulled image "alpine" in 4.786856536s
+  Normal   Created      10m   kubelet            Created container samplepod
+  Normal   Started      10m   kubelet            Started container samplepod
+[centos@k8master net.d]$
+
+
+***************kubectl delete pods samplepod --grace-period=0 --force
+
+
+[centos@k8master ~]$ kubectl exec -it samplepod -- ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+2: net1@if3: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue state UP
+    link/ether 96:fc:3c:05:6c:b1 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.148.200/24 brd 192.168.148.255 scope global net1
+       valid_lft forever preferred_lft forever
+12: eth0@if13: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1376 qdisc noqueue state UP
+    link/ether 76:f2:c4:7b:26:db brd ff:ff:ff:ff:ff:ff
+    inet 10.44.0.1/12 brd 10.47.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+
+
+####DASHBOARD ?
+[centos@k8master ~]$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+namespace/kubernetes-dashboard created
+serviceaccount/kubernetes-dashboard created
+service/kubernetes-dashboard created
+secret/kubernetes-dashboard-certs created
+secret/kubernetes-dashboard-csrf created
+secret/kubernetes-dashboard-key-holder created
+configmap/kubernetes-dashboard-settings created
+role.rbac.authorization.k8s.io/kubernetes-dashboard created
+clusterrole.rbac.authorization.k8s.io/kubernetes-dashboard created
+rolebinding.rbac.authorization.k8s.io/kubernetes-dashboard created
+clusterrolebinding.rbac.authorization.k8s.io/kubernetes-dashboard created
+deployment.apps/kubernetes-dashboard created
+service/dashboard-metrics-scraper created
+deployment.apps/dashboard-metrics-scraper created
+[centos@k8master ~]$
+
+
+######## HELM
+
+Download the latest helm 3 installation script.
+
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+Add execute permissions to the downloaded script.
+
+chmod 700 get_helm.sh
+Execute the installation script.
+
+./get_helm.sh
+Validate helm installtion by executing the helm command.
+
+helm
+Now, add the public stable helm repo for installing the stable charts.
+
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+Lets install a stable nginx chart and test the setup.
+
+[centos@k8master ~]$ helm repo add stable https://charts.helm.sh/stable
+"stable" has been added to your repositories
+helm ls
+
+
+############ K U M A ###############
+
+
+[centos@k8master ~]$ helm repo add kuma https://kumahq.github.io/charts
+"kuma" has been added to your repositories
+[centos@k8master ~]$
+[centos@k8master ~]$ helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "kuma" chart repository
+...Successfully got an update from the "stable" chart repository
+Update Complete. ⎈Happy Helming!⎈
+
+[centos@k8master ~]$ kubectl create namespace kuma-system
+[centos@k8master ~]$ helm install --namespace kuma-system kuma kuma/kuma
+
+[centos@k8master ~]$ kubectl get namespaces
+NAME              STATUS   AGE
+default           Active   18h
+kube-node-lease   Active   18h
+kube-public       Active   18h
+kube-system       Active   18h
+kuma-system       Active   55s
+
+
+NAME: kuma
+LAST DEPLOYED: Thu Jan 21 06:18:16 2021
+NAMESPACE: kuma-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+The Kuma Control Plane has been installed!
+
+You can access the control-plane via either the GUI, kubectl, the HTTP API, or the kumactl CLI.
+[centos@k8master ~]$ kubectl get namespaces
+NAME              STATUS   AGE
+default           Active   21h
+kube-node-lease   Active   21h
+kube-public       Active   21h
+kube-system       Active   21h
+kuma-system       Active   4m47s
+
+[centos@k8master ~]$ kubectl get services -n kuma-system
+NAME                 TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)                                                AGE
+kuma-control-plane   ClusterIP   10.98.94.34   <none>        5681/TCP,5682/TCP,443/TCP,5676/TCP,5678/TCP,5653/UDP   4m32s
+[centos@k8master ~]$ kubectl port-forward svc/kuma-control-plane -n kuma-system 5681:5681
+Forwarding from 127.0.0.1:5681 -> 5681
+Forwarding from [::1]:5681 -> 5681
+Handling connection for 5681
+
+DA ALTRA CONSOLE :::::::::::::: Risponde
+[centos@k8master ~]$ curl 127.0.0.1:5681
+{
+ "hostname": "kuma-control-plane-5d49c9687f-z52qx",
+ "tagline": "Kuma",
+ "version": "1.0.5"
+}
+
+To install the marketplace demo application you can run:
+
+$ kubectl apply -f https://bit.ly/demokuma
+This will provision a new kuma-demo namespace with all the services required to run the application, in this case:
+
+frontend: the entry-point service that serves the web application.
+backend: the underlying backend component that powers the frontend service.
+postgres: the database that stores the marketplace items.
+redis: the backend storage for items reviews.
+You can then access the application by executing:
+
+[centos@k8master ~]$ kubectl apply -f https://bit.ly/demokuma
+namespace/kuma-demo created
+deployment.apps/postgres-master created
+service/postgres created
+deployment.apps/redis-master created
+service/redis created
+service/backend created
+deployment.apps/kuma-demo-backend-v0 created
+deployment.apps/kuma-demo-backend-v1 created
+deployment.apps/kuma-demo-backend-v2 created
+service/frontend created
+deployment.apps/kuma-demo-app created
+[centos@k8master ~]$
+
+[centos@k8master ~]$ kubectl get pod -A
+NAMESPACE     NAME                                           READY   STATUS    RESTARTS   AGE
+default       samplepod                                      1/1     Running   0          23m
+kube-system   coredns-74ff55c5b-5ch8m                        1/1     Running   1          22h
+kube-system   coredns-74ff55c5b-fpqrv                        1/1     Running   1          22h
+kube-system   etcd-k8master.pippolab.vr                      1/1     Running   2          22h
+kube-system   kube-apiserver-k8master.pippolab.vr            1/1     Running   2          22h
+kube-system   kube-controller-manager-k8master.pippolab.vr   1/1     Running   3          22h
+kube-system   kube-multus-ds-amd64-8k79k                     1/1     Running   0          59m
+kube-system   kube-multus-ds-amd64-s55p8                     1/1     Running   0          59m
+kube-system   kube-multus-ds-amd64-sdhl6                     1/1     Running   0          59m
+kube-system   kube-proxy-bsfjh                               1/1     Running   1          5h31m
+kube-system   kube-proxy-f57r9                               1/1     Running   1          5h51m
+kube-system   kube-proxy-n4xcs                               1/1     Running   2          22h
+kube-system   kube-scheduler-k8master.pippolab.vr            1/1     Running   3          22h
+kube-system   weave-net-4tnm2                                2/2     Running   3          5h51m
+kube-system   weave-net-7rbbl                                2/2     Running   2          5h56m
+kube-system   weave-net-lvffc                                2/2     Running   3          5h31m
+kuma-demo     kuma-demo-app-6787b4f7f5-9wwlf                 1/1     Running   0          108s
+kuma-demo     kuma-demo-backend-v0-56db47c579-tsh68          1/1     Running   0          110s
+kuma-demo     postgres-master-645bc44fd-x4dl8                1/1     Running   0          110s
+kuma-demo     redis-master-55fd8f6f54-n84wd                  1/1     Running   0          111s
+kuma-system   kuma-control-plane-5d49c9687f-z52qx            1/1     Running   1          11m
+[centos@k8master ~]$
+
+
+[centos@k8master ~]$ kubectl port-forward svc/frontend -n kuma-demo 8080:8080
+Forwarding from 127.0.0.1:8080 -> 8080
+Forwarding from [::1]:8080 -> 8080
+Handling connection for 8080
+
+:::::::::::::TEST ::::::::::: DA ALTRA CONSOLE
+[centos@k8master ~]$ curl 127.0.0.1:8080
+<!DOCTYPE html><html lang=en><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge">
+<meta name=viewport content="width=device-width,initial-scale=1"><link rel=icon href=/favicon.png><title>
+Kuma Marketplace</title><link href=/css/app.92b097f8.css rel=preload as=style>
+<link href=/css/chunk-vendors.96abecf8.css rel=preload as=style>
+<link href=/js/app.5b2c045d.js rel=preload as=script>
+<link href=/js/chunk-vendors.1eee84b8.js rel=preload as=script>
+<link href=/css/chunk-vendors.96abecf8.css rel=stylesheet>
+<link href=/css/app.92b097f8.css rel=stylesheet></head><body><noscript>
+<strong>We're sorry but Kuma Marketplace doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript>
+<div id=app></div><script src=/js/chunk-vendors.1eee84b8.js></script><script src=/js/app.5b2c045d.js></script></body></html>
+[centos@k8master ~]$
+
+
+
+cat dp.yaml
+type: Dataplane
+mesh: default
+name: redis-1
+networking:
+  address: 192.168.148.205
+  inbound:
+  - port: 9000
+    servicePort: 6379
+    tags:
+      kuma.io/service: redis
+
+$ kuma-dp run \
+  --cp-address=https://127.0.0.1:5678 \
+  --dataplane-file=dp.yaml
+  --dataplane-token-file=/tmp/kuma-dp-redis-1-token
+
+
+
+
+
+kumactl get dataplanes
+MESH      NAME                                              TAGS
+default   postgres-master-78d9c9c8c9-n8zjk.kuma-demo        app=postgres pod-template-hash=78d9c9c8c9 protocol=tcp service=postgres_kuma-demo_svc_5432
+default   kuma-demo-backend-v0-6fdb79ddfd-dkrp4.kuma-demo   app=kuma-demo-backend env=prod pod-template-hash=6fdb79ddfd protocol=http service=backend_kuma-demo_svc_3001 version=v0
+default   kuma-demo-app-68758d8d5d-dddvg.kuma-demo          app=kuma-demo-frontend env=prod pod-template-hash=68758d8d5d protocol=http service=frontend_kuma-demo_svc_8080 version=v8
+default   redis-master-657c58c859-5wkb4.kuma-demo           app=redis pod-template-hash=657c58c859 protocol=tcp role=master service=redis_kuma-demo_svc_6379 tier=backend
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NAMESPACE     NAME                                           READY   STATUS        RESTARTS   AGE
+default       pippopod                                       0/1     Terminating   0          57m
+default       samplepod                                      1/1     Running       0          40m
+kube-system   coredns-74ff55c5b-5ch8m                        1/1     Running       0          18h
+kube-system   coredns-74ff55c5b-fpqrv                        1/1     Running       0          18h
+kube-system   etcd-k8master.pippolab.vr                      1/1     Running       1          18h
+kube-system   kube-apiserver-k8master.pippolab.vr            1/1     Running       1          18h
+kube-system   kube-controller-manager-k8master.pippolab.vr   1/1     Running       2          18h
+kube-system   kube-multus-ds-amd64-5qxzq                     1/1     Running       0          81m
+kube-system   kube-multus-ds-amd64-b9xpg                     1/1     Running       0          81m
+kube-system   kube-multus-ds-amd64-m7lrx                     1/1     Running       0          81m
+kube-system   kube-proxy-bsfjh                               1/1     Running       0          121m
+kube-system   kube-proxy-f57r9                               1/1     Running       0          141m
+kube-system   kube-proxy-n4xcs                               1/1     Running       1          18h
+kube-system   kube-scheduler-k8master.pippolab.vr            1/1     Running       2          18h
+kube-system   weave-net-4tnm2                                2/2     Running       1          141m
+kube-system   weave-net-7rbbl                                2/2     Running       0          146m
+kube-system   weave-net-lvffc                                2/2     Running       1          121m
+kuma-system   kuma-control-plane-69b8bdbc66-wp2rd            1/1     Running       1          17m
+
+[centos@k8master ~]$ helm upgrade --install kuma --namespace kuma-system --set controlPlane.mode=remote,controlPlane.zone=kuma-global-remot
+e-sync,ingress.enabled=true,controlPlane.kdsGlobalAddress=grpcs://k8master.pippolab.vr kuma/kuma
+W0121 07:02:07.369075   61102 warnings.go:70] admissionregistration.k8s.io/v1beta1 MutatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 MutatingWebhookConfiguration
+W0121 07:02:07.448277   61102 warnings.go:70] admissionregistration.k8s.io/v1beta1 MutatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 MutatingWebhookConfiguration
+W0121 07:02:07.812895   61102 warnings.go:70] admissionregistration.k8s.io/v1beta1 MutatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 MutatingWebhookConfiguration
+W0121 07:02:08.290257   61102 warnings.go:70] admissionregistration.k8s.io/v1beta1 ValidatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 ValidatingWebhookConfiguration
+W0121 07:02:08.507226   61102 warnings.go:70] admissionregistration.k8s.io/v1beta1 ValidatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 ValidatingWebhookConfiguration
+W0121 07:02:08.760185   61102 warnings.go:70] admissionregistration.k8s.io/v1beta1 ValidatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 ValidatingWebhookConfiguration
+Release "kuma" has been upgraded. Happy Helming!
+NAME: kuma
+LAST DEPLOYED: Thu Jan 21 07:02:04 2021
+NAMESPACE: kuma-system
+STATUS: deployed
+REVISION: 2
+TEST SUITE: None
+NOTES:
+The Kuma Control Plane has been installed!
+
+You can access the control-plane via either the GUI, kubectl, the HTTP API, or the kumactl CLI.
+
+
+echo "apiVersion: kuma.io/v1alpha1
+kind: Zone
+mesh: default
+metadata:
+  name: zone-1
+spec:
+  ingress:
+    address: 192.168.147.133" | kubectl apply -f -
+	
+	
+	[centos@k8master ~]$ kubectl get pod -A
+NAMESPACE              NAME                                           READY   STATUS        RESTARTS   AGE
+default                pippopod                                       0/1     Terminating   0          91m
+default                samplepod                                      1/1     Running       0          73m
+kube-system            coredns-74ff55c5b-5ch8m                        1/1     Running       0          19h
+kube-system            coredns-74ff55c5b-fpqrv                        1/1     Running       0          19h
+kube-system            etcd-k8master.pippolab.vr                      1/1     Running       1          19h
+kube-system            kube-apiserver-k8master.pippolab.vr            1/1     Running       1          19h
+kube-system            kube-controller-manager-k8master.pippolab.vr   1/1     Running       2          19h
+kube-system            kube-multus-ds-amd64-5qxzq                     1/1     Running       0          114m
+kube-system            kube-multus-ds-amd64-b9xpg                     1/1     Running       0          114m
+kube-system            kube-multus-ds-amd64-m7lrx                     1/1     Running       0          114m
+kube-system            kube-proxy-bsfjh                               1/1     Running       0          154m
+kube-system            kube-proxy-f57r9                               1/1     Running       0          174m
+kube-system            kube-proxy-n4xcs                               1/1     Running       1          19h
+kube-system            kube-scheduler-k8master.pippolab.vr            1/1     Running       2          19h
+kube-system            weave-net-4tnm2                                2/2     Running       1          174m
+kube-system            weave-net-7rbbl                                2/2     Running       0          179m
+kube-system            weave-net-lvffc                                2/2     Running       1          154m
+kubernetes-dashboard   dashboard-metrics-scraper-7b59f7d4df-gwvlt     1/1     Running       0          26m
+kubernetes-dashboard   kubernetes-dashboard-74d688b6bc-xwtvv          1/1     Running       0          26m
+kuma-system            kuma-control-plane-769f75c77c-vrr6c            1/1     Running       0          7m16s
+kuma-system            kuma-ingress-67578fdcf5-tgp8d                  1/1     Running       3          7m16s

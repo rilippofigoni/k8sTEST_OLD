@@ -1,0 +1,110 @@
+[centos@k8master manifests]$ ls
+etcd.yaml  kube-apiserver.yaml  kube-controller-manager.yaml  kube-scheduler.yaml
+[centos@k8master manifests]$ nano kube-apiserver.yaml
+[centos@k8master manifests]$ sudo nano kube-apiserver.yaml
+[centos@k8master manifests]$ sudo nano kube-apiserver.yaml
+[centos@k8master manifests]$
+
+
+
+
+#This is the VMWARE NAT
+3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 00:0c:29:6f:8d:39 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.147.133/24 brd 192.168.147.255 scope global dynamic noprefixroute ens34
+       valid_lft 1718sec preferred_lft 1718sec
+    inet6 fe80::aa3d:c998:1279:160b/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+	   
+####This is the VMWARE HOST-ONLY
+3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 00:0c:29:6f:8d:39 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.147.133/24 brd 192.168.147.255 scope global dynamic noprefixroute ens34
+       valid_lft 1718sec preferred_lft 1718sec
+    inet6 fe80::aa3d:c998:1279:160b/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+
+#### This is weavenet CNI
+9: weave: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1376 qdisc noqueue state UP group default qlen 1000
+    link/ether 12:bc:ba:2f:20:ed brd ff:ff:ff:ff:ff:ff
+    inet 10.32.0.1/12 brd 10.47.255.255 scope global weave
+       valid_lft forever preferred_lft forever
+    inet6 fe80::10bc:baff:fe2f:20ed/64 scope link
+       valid_lft forever preferred_lft forever	
+	   
+#### THIS is the NETWORK situation :
+
+[centos@k8master bin]$ route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+default         _gateway        0.0.0.0         UG    101    0        0 ens34
+10.32.0.0       0.0.0.0         255.240.0.0     U     0      0        0 weave
+172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 docker0
+192.168.122.0   0.0.0.0         255.255.255.0   U     0      0        0 virbr0
+192.168.146.0   0.0.0.0         255.255.255.0   U     100    0        0 ens33
+192.168.147.0   0.0.0.0         255.255.255.0   U     101    0        0 ens34
+
+[centos@k8master bin]$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: ens33: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 00:0c:29:6f:8d:2f brd ff:ff:ff:ff:ff:ff
+    inet 192.168.146.131/24 brd 192.168.146.255 scope global dynamic noprefixroute ens33
+       valid_lft 1718sec preferred_lft 1718sec
+    inet6 fe80::dd9d:7f33:5ab9:1246/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+3: ens34: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 00:0c:29:6f:8d:39 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.147.133/24 brd 192.168.147.255 scope global dynamic noprefixroute ens34
+       valid_lft 1718sec preferred_lft 1718sec
+    inet6 fe80::aa3d:c998:1279:160b/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+4: virbr0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default qlen 1000
+    link/ether 52:54:00:21:68:16 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0
+       valid_lft forever preferred_lft forever
+5: virbr0-nic: <BROADCAST,MULTICAST> mtu 1500 qdisc fq_codel master virbr0 state DOWN group default qlen 1000
+    link/ether 52:54:00:21:68:16 brd ff:ff:ff:ff:ff:ff
+6: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+    link/ether 02:42:61:43:1e:8e brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+7: datapath: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1376 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/ether 1a:ff:32:8e:0a:e8 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::18ff:32ff:fe8e:ae8/64 scope link
+       valid_lft forever preferred_lft forever
+9: weave: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1376 qdisc noqueue state UP group default qlen 1000
+    link/ether 12:bc:ba:2f:20:ed brd ff:ff:ff:ff:ff:ff
+    inet 10.32.0.1/12 brd 10.47.255.255 scope global weave
+       valid_lft forever preferred_lft forever
+    inet6 fe80::10bc:baff:fe2f:20ed/64 scope link
+       valid_lft forever preferred_lft forever
+11: vethwe-datapath@vethwe-bridge: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1376 qdisc noqueue master datapath state UP group default
+    link/ether d2:ec:2b:dd:cd:ba brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::d0ec:2bff:fedd:cdba/64 scope link
+       valid_lft forever preferred_lft forever
+12: vethwe-bridge@vethwe-datapath: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1376 qdisc noqueue master weave state UP group default
+    link/ether 6a:e5:74:2e:f4:b2 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::68e5:74ff:fe2e:f4b2/64 scope link
+       valid_lft forever preferred_lft forever
+13: vxlan-6784: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 65535 qdisc noqueue master datapath state UNKNOWN group default qlen 1000
+    link/ether 8e:ae:11:02:e5:32 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::8cae:11ff:fe02:e532/64 scope link
+       valid_lft forever preferred_lft forever
+15: vethwepl2c71c1f@if14: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1376 qdisc noqueue master weave state UP group default
+    link/ether ba:b5:88:1b:7d:f2 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fe80::b8b5:88ff:fe1b:7df2/64 scope link
+       valid_lft forever preferred_lft forever
+17: vethwepl64f86b9@if16: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1376 qdisc noqueue master weave state UP group default
+    link/ether 3e:28:55:09:79:d4 brd ff:ff:ff:ff:ff:ff link-netnsid 1
+    inet6 fe80::3c28:55ff:fe09:79d4/64 scope link
+       valid_lft forever preferred_lft forever
+19: vethwepl5b8d915@if18: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1376 qdisc noqueue master weave state UP group default
+    link/ether 02:d7:9b:d6:c8:10 brd ff:ff:ff:ff:ff:ff link-netnsid 2
+    inet6 fe80::d7:9bff:fed6:c810/64 scope link
+       valid_lft forever preferred_lft forever
+[centos@k8master bin]$   

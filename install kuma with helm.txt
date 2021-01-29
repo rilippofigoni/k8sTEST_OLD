@@ -1,0 +1,75 @@
+[centos@k8master ~]$ helm repo add kuma https://kumahq.github.io/charts
+"kuma" already exists with the same configuration, skipping
+[centos@k8master ~]$ helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "kuma" chart repository
+...Successfully got an update from the "stable" chart repository
+Update Complete. ⎈Happy Helming!⎈
+[centos@k8master ~]$ kubectl create namespace kuma-system
+namespace/kuma-system created
+[centos@k8master ~]$ helm install --namespace kuma-system kuma kuma/kuma
+W0122 17:39:36.979475   62587 warnings.go:70] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0122 17:39:37.023876   62587 warnings.go:70] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0122 17:39:37.072907   62587 warnings.go:70] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0122 17:39:37.113431   62587 warnings.go:70] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0122 17:39:37.149191   62587 warnings.go:70] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0122 17:39:37.195571   62587 warnings.go:70] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0122 17:39:37.240386   62587 warnings.go:70] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0122 17:39:37.283679   62587 warnings.go:70] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0122 17:39:37.322460   62587 warnings.go:70] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0122 17:39:37.363779   62587 warnings.go:70] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0122 17:39:37.411998   62587 warnings.go:70] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0122 17:39:37.453862   62587 warnings.go:70] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0122 17:39:37.488060   62587 warnings.go:70] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0122 17:39:37.548545   62587 warnings.go:70] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0122 17:39:37.591245   62587 warnings.go:70] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0122 17:39:37.627680   62587 warnings.go:70] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0122 17:39:37.676937   62587 warnings.go:70] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0122 17:39:39.407280   62587 warnings.go:70] admissionregistration.k8s.io/v1beta1 MutatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 MutatingWebhookConfiguration
+W0122 17:39:39.417029   62587 warnings.go:70] admissionregistration.k8s.io/v1beta1 ValidatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 ValidatingWebhookConfiguration
+W0122 17:39:43.496664   62587 warnings.go:70] admissionregistration.k8s.io/v1beta1 MutatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 MutatingWebhookConfiguration
+W0122 17:39:43.507667   62587 warnings.go:70] admissionregistration.k8s.io/v1beta1 MutatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 MutatingWebhookConfiguration
+W0122 17:39:43.555984   62587 warnings.go:70] admissionregistration.k8s.io/v1beta1 MutatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 MutatingWebhookConfiguration
+W0122 17:39:43.564514   62587 warnings.go:70] admissionregistration.k8s.io/v1beta1 ValidatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 ValidatingWebhookConfiguration
+W0122 17:39:43.580293   62587 warnings.go:70] admissionregistration.k8s.io/v1beta1 ValidatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 ValidatingWebhookConfiguration
+W0122 17:39:43.647886   62587 warnings.go:70] admissionregistration.k8s.io/v1beta1 ValidatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 ValidatingWebhookConfiguration
+NAME: kuma
+LAST DEPLOYED: Fri Jan 22 17:39:37 2021
+NAMESPACE: kuma-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+The Kuma Control Plane has been installed!
+
+You can access the control-plane via either the GUI, kubectl, the HTTP API, or the kumactl CLI.
+
+echo "apiVersion: kuma.io/v1alpha1
+kind: Mesh
+metadata: 
+  name: TEST
+spec: " | kubectl apply -f -
+
+error: error validating "STDIN": error validating data: unknown object type "nil" in Mesh.spec; if you choose to ignore these errors, turn validation off with --validate=false
+
+[centos@k8master ~]$ kubectl get pods -A
+NAMESPACE              NAME                                           READY   STATUS    RESTARTS   AGE
+default                samplepod                                      1/1     Running   2          26h
+kube-system            coredns-74ff55c5b-5ch8m                        1/1     Running   4          47h
+kube-system            coredns-74ff55c5b-fpqrv                        1/1     Running   4          47h
+kube-system            etcd-k8master.pippolab.vr                      1/1     Running   9          47h
+kube-system            kube-apiserver-k8master.pippolab.vr            1/1     Running   8          47h
+kube-system            kube-controller-manager-k8master.pippolab.vr   1/1     Running   6          47h
+kube-system            kube-multus-ds-amd64-8k79k                     1/1     Running   3          26h
+kube-system            kube-multus-ds-amd64-s55p8                     1/1     Running   2          26h
+kube-system            kube-multus-ds-amd64-sdhl6                     1/1     Running   2          26h
+kube-system            kube-proxy-bsfjh                               1/1     Running   3          31h
+kube-system            kube-proxy-f57r9                               1/1     Running   3          31h
+kube-system            kube-proxy-n4xcs                               1/1     Running   5          47h
+kube-system            kube-scheduler-k8master.pippolab.vr            1/1     Running   6          47h
+kube-system            weave-net-4tnm2                                2/2     Running   7          31h
+kube-system            weave-net-7rbbl                                2/2     Running   8          31h
+kube-system            weave-net-lvffc                                2/2     Running   7          31h
+kubernetes-dashboard   dashboard-metrics-scraper-79c5968bdc-xwsvp     1/1     Running   0          51m
+kubernetes-dashboard   kubernetes-dashboard-7448ffc97b-g76q9          1/1     Running   0          51m
+kuma-system            kuma-control-plane-6b54d7d844-khvtv            1/1     Running   1          15m

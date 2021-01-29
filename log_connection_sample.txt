@@ -1,0 +1,42 @@
+[centos@k8master bin]$ kubectl get pods -A
+NAMESPACE              NAME                                           READY   STATUS    RESTARTS   AGE
+default                samplepod                                      1/1     Running   4          4d1h
+kube-system            coredns-74ff55c5b-5ch8m                        1/1     Running   6          4d23h
+kube-system            coredns-74ff55c5b-fpqrv                        1/1     Running   6          4d23h
+kube-system            etcd-k8master.pippolab.vr                      1/1     Running   11         4d23h
+kube-system            kube-apiserver-k8master.pippolab.vr            1/1     Running   10         4d23h
+kube-system            kube-controller-manager-k8master.pippolab.vr   1/1     Running   8          4d23h
+kube-system            kube-multus-ds-amd64-8k79k                     1/1     Running   5          4d2h
+kube-system            kube-multus-ds-amd64-s55p8                     1/1     Running   4          4d2h
+kube-system            kube-multus-ds-amd64-sdhl6                     1/1     Running   4          4d2h
+kube-system            kube-proxy-bsfjh                               1/1     Running   5          4d6h
+kube-system            kube-proxy-f57r9                               1/1     Running   5          4d7h
+kube-system            kube-proxy-n4xcs                               1/1     Running   7          4d23h
+kube-system            kube-scheduler-k8master.pippolab.vr            1/1     Running   8          4d23h
+kube-system            weave-net-4tnm2                                2/2     Running   11         4d7h
+kube-system            weave-net-7rbbl                                2/2     Running   12         4d7h
+kube-system            weave-net-lvffc                                2/2     Running   11         4d6h
+kubernetes-dashboard   dashboard-metrics-scraper-79c5968bdc-xwsvp     1/1     Running   2          3d
+kubernetes-dashboard   kubernetes-dashboard-7448ffc97b-g76q9          1/1     Running   2          3d
+kuma-system            kuma-control-plane-68b658555c-s82tv            1/1     Running   1          16m
+
+
+[centos@k8master bin]$ kubectl get pods --output=wide
+NAME        READY   STATUS    RESTARTS   AGE    IP          NODE                  NOMINATED NODE   READINESS GATES
+samplepod   1/1     Running   4          4d1h   10.44.0.2   k8node1.pippolab.vr   <none>           <none>
+
+[centos@k8master bin]$ ping 10.44.0.2
+PING 10.44.0.2 (10.44.0.2) 56(84) bytes of data.
+64 bytes from 10.44.0.2: icmp_seq=1 ttl=64 time=12.2 ms
+64 bytes from 10.44.0.2: icmp_seq=2 ttl=64 time=15.1 ms
+64 bytes from 10.44.0.2: icmp_seq=3 ttl=64 time=2.52 ms
+64 bytes from 10.44.0.2: icmp_seq=4 ttl=64 time=4.66 ms
+64 bytes from 10.44.0.2: icmp_seq=5 ttl=64 time=4.32 ms
+64 bytes from 10.44.0.2: icmp_seq=6 ttl=64 time=5.39 ms
+64 bytes from 10.44.0.2: icmp_seq=7 ttl=64 time=4.53 ms
+64 bytes from 10.44.0.2: icmp_seq=8 ttl=64 time=11.8 ms
+^C
+--- 10.44.0.2 ping statistics ---
+8 packets transmitted, 8 received, 0% packet loss, time 22ms
+rtt min/avg/max/mdev = 2.516/7.560/15.123/4.397 ms
+[centos@k8master bin]$

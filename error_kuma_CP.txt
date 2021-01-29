@@ -1,0 +1,50 @@
+[centos@k8master bin]$ ls
+envoy  kuma-cp  kumactl  kuma-dp  kuma-prometheus-sd
+[centos@k8master bin]$ ./kumactl install control-plane | kubectl apply -f -
+namespace/kuma-system created
+serviceaccount/kuma-control-plane created
+secret/kuma-tls-cert created
+configmap/kuma-control-plane-config created
+Warning: apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+customresourcedefinition.apiextensions.k8s.io/circuitbreakers.kuma.io unchanged
+customresourcedefinition.apiextensions.k8s.io/dataplanes.kuma.io configured
+customresourcedefinition.apiextensions.k8s.io/serviceinsights.kuma.io configured
+customresourcedefinition.apiextensions.k8s.io/trafficlogs.kuma.io unchanged
+customresourcedefinition.apiextensions.k8s.io/trafficpermissions.kuma.io unchanged
+customresourcedefinition.apiextensions.k8s.io/trafficroutes.kuma.io unchanged
+customresourcedefinition.apiextensions.k8s.io/traffictraces.kuma.io unchanged
+customresourcedefinition.apiextensions.k8s.io/zoneinsights.kuma.io unchanged
+customresourcedefinition.apiextensions.k8s.io/zones.kuma.io unchanged
+customresourcedefinition.apiextensions.k8s.io/dataplaneinsights.kuma.io configured
+customresourcedefinition.apiextensions.k8s.io/externalservices.kuma.io unchanged
+customresourcedefinition.apiextensions.k8s.io/faultinjections.kuma.io unchanged
+customresourcedefinition.apiextensions.k8s.io/healthchecks.kuma.io unchanged
+customresourcedefinition.apiextensions.k8s.io/meshinsights.kuma.io configured
+customresourcedefinition.apiextensions.k8s.io/meshes.kuma.io configured
+customresourcedefinition.apiextensions.k8s.io/proxytemplates.kuma.io configured
+customresourcedefinition.apiextensions.k8s.io/retries.kuma.io unchanged
+clusterrole.rbac.authorization.k8s.io/kuma-control-plane unchanged
+clusterrolebinding.rbac.authorization.k8s.io/kuma-control-plane unchanged
+role.rbac.authorization.k8s.io/kuma-control-plane created
+rolebinding.rbac.authorization.k8s.io/kuma-control-plane created
+service/kuma-control-plane created
+deployment.apps/kuma-control-plane created
+Warning: admissionregistration.k8s.io/v1beta1 MutatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 MutatingWebhookConfiguration
+mutatingwebhookconfiguration.admissionregistration.k8s.io/kuma-admission-mutating-webhook-configuration configured
+Warning: admissionregistration.k8s.io/v1beta1 ValidatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 ValidatingWebhookConfiguration
+validatingwebhookconfiguration.admissionregistration.k8s.io/kuma-validating-webhook-configuration configured
+[centos@k8master bin]$ kubectl get pod -n kuma-system
+NAME                                  READY   STATUS    RESTARTS   AGE
+kuma-control-plane-68b658555c-s82tv   1/1     Running   0          3m23s
+[centos@k8master bin]$ echo "apiVersion: kuma.io/v1alpha1
+> kind: Mesh
+> metadata:
+>   name: default
+> spec:
+>   mtls:
+>     enabledBackend: ca-1
+>     backends:
+>     - name: ca-1
+>       type: builtin" | kubectl apply -f -
+Error from server (InternalError): error when creating "STDIN": Internal error occurred: failed calling webhook "mesh.defaulter.kuma-admission.kuma.io": Post "https://kuma-control-plane.kuma-system.svc:443/default-kuma-io-v1alpha1-mesh?timeout=30s": dial tcp 10.98.66.60:443: connect: no route to host
+[centos@k8master bin]$

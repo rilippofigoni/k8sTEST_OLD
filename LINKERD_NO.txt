@@ -1,0 +1,247 @@
+##### INSTALLAZIONE LINKERD
+
+[centos@k8smaster ~]$ curl -sL https://run.linkerd.io/install | sh
+Downloading linkerd2-cli-stable-2.9.2-linux-amd64...
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   663  100   663    0     0   2845      0 --:--:-- --:--:-- --:--:--  2857
+100 39.1M  100 39.1M    0     0  6111k      0  0:00:06  0:00:06 --:--:-- 7944k
+Download complete!
+
+Validating checksum...
+Checksum valid.
+
+Linkerd stable-2.9.2 was successfully installed 🎉
+
+
+Add the linkerd CLI to your path with:
+
+  export PATH=$PATH:/home/centos/.linkerd2/bin
+
+Now run:
+
+  linkerd check --pre                     # validate that Linkerd can be installed
+  linkerd install | kubectl apply -f -    # install the control plane into the 'linkerd' namespace
+  linkerd check                           # validate everything worked!
+  linkerd dashboard                       # launch the dashboard
+
+Looking for more? Visit https://linkerd.io/2/next-steps
+
+[centos@k8smaster ~]$ export PATH=$PATH:$HOME/.linkerd2/bin
+[centos@k8smaster ~]$ linkerd check --pre
+kubernetes-api
+--------------
+√ can initialize the client
+√ can query the Kubernetes API
+
+kubernetes-version
+------------------
+√ is running the minimum Kubernetes API version
+√ is running the minimum kubectl version
+
+pre-kubernetes-setup
+--------------------
+√ control plane namespace does not already exist
+W0126 12:57:51.894830   24157 warnings.go:67] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0126 12:57:52.094900   24157 warnings.go:67] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+W0126 12:57:52.719914   24157 warnings.go:67] admissionregistration.k8s.io/v1beta1 MutatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 MutatingWebhookConfiguration
+W0126 12:57:53.318693   24157 warnings.go:67] admissionregistration.k8s.io/v1beta1 ValidatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 ValidatingWebhookConfiguration
+√ can create non-namespaced resources
+√ can create ServiceAccounts
+√ can create Services
+√ can create Deployments
+√ can create CronJobs
+√ can create ConfigMaps
+√ can create Secrets
+√ can read Secrets
+√ can read extension-apiserver-authentication configmap
+√ no clock skew detected
+
+pre-kubernetes-capability
+-------------------------
+√ has NET_ADMIN capability
+√ has NET_RAW capability
+
+linkerd-version
+---------------
+√ can determine the latest version
+√ cli is up-to-date
+
+Status check results are √
+[centos@k8smaster ~]$ C
+-bash: C: command not found
+[centos@k8smaster ~]$ linkerd install | kubectl apply -f -
+namespace/linkerd created
+clusterrole.rbac.authorization.k8s.io/linkerd-linkerd-identity created
+clusterrolebinding.rbac.authorization.k8s.io/linkerd-linkerd-identity created
+serviceaccount/linkerd-identity created
+clusterrole.rbac.authorization.k8s.io/linkerd-linkerd-controller created
+clusterrolebinding.rbac.authorization.k8s.io/linkerd-linkerd-controller created
+serviceaccount/linkerd-controller created
+clusterrole.rbac.authorization.k8s.io/linkerd-linkerd-destination created
+clusterrolebinding.rbac.authorization.k8s.io/linkerd-linkerd-destination created
+serviceaccount/linkerd-destination created
+role.rbac.authorization.k8s.io/linkerd-heartbeat created
+rolebinding.rbac.authorization.k8s.io/linkerd-heartbeat created
+serviceaccount/linkerd-heartbeat created
+role.rbac.authorization.k8s.io/linkerd-web created
+rolebinding.rbac.authorization.k8s.io/linkerd-web created
+clusterrole.rbac.authorization.k8s.io/linkerd-linkerd-web-check created
+clusterrolebinding.rbac.authorization.k8s.io/linkerd-linkerd-web-check created
+clusterrolebinding.rbac.authorization.k8s.io/linkerd-linkerd-web-admin created
+serviceaccount/linkerd-web created
+Warning: apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+customresourcedefinition.apiextensions.k8s.io/serviceprofiles.linkerd.io created
+customresourcedefinition.apiextensions.k8s.io/trafficsplits.split.smi-spec.io created
+clusterrole.rbac.authorization.k8s.io/linkerd-linkerd-proxy-injector created
+clusterrolebinding.rbac.authorization.k8s.io/linkerd-linkerd-proxy-injector created
+serviceaccount/linkerd-proxy-injector created
+secret/linkerd-proxy-injector-k8s-tls created
+Warning: admissionregistration.k8s.io/v1beta1 MutatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 MutatingWebhookConfiguration
+mutatingwebhookconfiguration.admissionregistration.k8s.io/linkerd-proxy-injector-webhook-config created
+clusterrole.rbac.authorization.k8s.io/linkerd-linkerd-sp-validator created
+clusterrolebinding.rbac.authorization.k8s.io/linkerd-linkerd-sp-validator created
+serviceaccount/linkerd-sp-validator created
+secret/linkerd-sp-validator-k8s-tls created
+Warning: admissionregistration.k8s.io/v1beta1 ValidatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 ValidatingWebhookConfiguration
+validatingwebhookconfiguration.admissionregistration.k8s.io/linkerd-sp-validator-webhook-config created
+clusterrole.rbac.authorization.k8s.io/linkerd-linkerd-tap created
+clusterrole.rbac.authorization.k8s.io/linkerd-linkerd-tap-admin created
+clusterrolebinding.rbac.authorization.k8s.io/linkerd-linkerd-tap created
+clusterrolebinding.rbac.authorization.k8s.io/linkerd-linkerd-tap-auth-delegator created
+serviceaccount/linkerd-tap created
+rolebinding.rbac.authorization.k8s.io/linkerd-linkerd-tap-auth-reader created
+secret/linkerd-tap-k8s-tls created
+apiservice.apiregistration.k8s.io/v1alpha1.tap.linkerd.io created
+podsecuritypolicy.policy/linkerd-linkerd-control-plane created
+role.rbac.authorization.k8s.io/linkerd-psp created
+rolebinding.rbac.authorization.k8s.io/linkerd-psp created
+configmap/linkerd-config created
+secret/linkerd-identity-issuer created
+service/linkerd-identity created
+service/linkerd-identity-headless created
+deployment.apps/linkerd-identity created
+service/linkerd-controller-api created
+deployment.apps/linkerd-controller created
+service/linkerd-dst created
+service/linkerd-dst-headless created
+deployment.apps/linkerd-destination created
+cronjob.batch/linkerd-heartbeat created
+service/linkerd-web created
+deployment.apps/linkerd-web created
+deployment.apps/linkerd-proxy-injector created
+service/linkerd-proxy-injector created
+service/linkerd-sp-validator created
+deployment.apps/linkerd-sp-validator created
+service/linkerd-tap created
+deployment.apps/linkerd-tap created
+serviceaccount/linkerd-grafana created
+configmap/linkerd-grafana-config created
+service/linkerd-grafana created
+deployment.apps/linkerd-grafana created
+clusterrole.rbac.authorization.k8s.io/linkerd-linkerd-prometheus created
+clusterrolebinding.rbac.authorization.k8s.io/linkerd-linkerd-prometheus created
+serviceaccount/linkerd-prometheus created
+configmap/linkerd-prometheus-config created
+service/linkerd-prometheus created
+deployment.apps/linkerd-prometheus created
+secret/linkerd-config-overrides created
+[centos@k8smaster ~]$ linkerd check
+kubernetes-api
+--------------
+√ can initialize the client
+√ can query the Kubernetes API
+
+kubernetes-version
+------------------
+√ is running the minimum Kubernetes API version
+√ is running the minimum kubectl version
+
+linkerd-existence
+-----------------
+√ 'linkerd-config' config map exists
+√ heartbeat ServiceAccount exist
+√ control plane replica sets are ready
+√ no unschedulable pods
+√ controller pod is running
+√ can initialize the client
+√ can query the control plane API
+
+linkerd-config
+--------------
+√ control plane Namespace exists
+√ control plane ClusterRoles exist
+√ control plane ClusterRoleBindings exist
+√ control plane ServiceAccounts exist
+W0126 13:02:16.575390   25441 warnings.go:67] apiextensions.k8s.io/v1beta1 CustomResourceDefinition is deprecated in v1.16+, unavailable in v1.22+; use apiextensions.k8s.io/v1 CustomResourceDefinition
+√ control plane CustomResourceDefinitions exist
+W0126 13:02:16.596284   25441 warnings.go:67] admissionregistration.k8s.io/v1beta1 MutatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 MutatingWebhookConfiguration
+√ control plane MutatingWebhookConfigurations exist
+W0126 13:02:16.611755   25441 warnings.go:67] admissionregistration.k8s.io/v1beta1 ValidatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 ValidatingWebhookConfiguration
+√ control plane ValidatingWebhookConfigurations exist
+√ control plane PodSecurityPolicies exist
+
+linkerd-identity
+----------------
+√ certificate config is valid
+√ trust anchors are using supported crypto algorithm
+√ trust anchors are within their validity period
+√ trust anchors are valid for at least 60 days
+√ issuer cert is using supported crypto algorithm
+√ issuer cert is within its validity period
+√ issuer cert is valid for at least 60 days
+√ issuer cert is issued by the trust anchor
+
+linkerd-webhooks-and-apisvc-tls
+-------------------------------
+√ tap API server has valid cert
+√ tap API server cert is valid for at least 60 days
+W0126 13:02:16.697762   25441 warnings.go:67] admissionregistration.k8s.io/v1beta1 MutatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 MutatingWebhookConfiguration
+√ proxy-injector webhook has valid cert
+√ proxy-injector cert is valid for at least 60 days
+W0126 13:02:16.757138   25441 warnings.go:67] admissionregistration.k8s.io/v1beta1 ValidatingWebhookConfiguration is deprecated in v1.16+, unavailable in v1.22+; use admissionregistration.k8s.io/v1 ValidatingWebhookConfiguration
+√ sp-validator webhook has valid cert
+√ sp-validator cert is valid for at least 60 days
+
+linkerd-api
+-----------
+√ control plane pods are ready
+/ pod/linkerd-proxy-injector-7db4d4b4db-xxp9s container linkerd-proxy is not ready √ control plane self-check
+√ [kubernetes] control plane can talk to Kubernetes
+× [prometheus] control plane can talk to Prometheus
+    Error calling Prometheus from the control plane: Post "http://linkerd-prometheus.linkerd.svc.cluster.local:9090/api/v1/query": dial tcp 127.0.0.1:9090: connect: connection refused
+    see https://linkerd.io/checks/#l5d-api-control-api for hints
+
+Status check results are ×
+
+[centos@k8smaster ~]$ kubectl -n linkerd get all | grep prometheus
+I0126 13:09:24.732695   29297 request.go:655] Throttling request took 1.114259784s, request: GET:https://192.168.147.140:6443/apis/certificates.k8s.io/v1beta1?timeout=32s
+I0126 13:09:34.931657   29297 request.go:655] Throttling request took 5.194885644s, request: GET:https://192.168.147.140:6443/apis/certificates.k8s.io/v1?timeout=32s
+I0126 13:09:44.931889   29297 request.go:655] Throttling request took 6.57972128s, request: GET:https://192.168.147.140:6443/apis/flowcontrol.apiserver.k8s.io/v1beta1?timeout=32s
+I0126 13:09:54.932637   29297 request.go:655] Throttling request took 7.988419595s, request: GET:https://192.168.147.140:6443/apis/split.smi-spec.io/v1alpha1?timeout=32s
+I0126 13:10:05.332392   29297 request.go:655] Throttling request took 1.196737815s, request: GET:https://192.168.147.140:6443/apis/events.k8s.io/v1?timeout=32s
+^C
+[centos@k8smaster ~]$ ^C
+[centos@k8smaster ~]$ ^C
+[centos@k8smaster ~]$ kubectl -n linkerd get deploy
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+linkerd-controller       1/1     1            1           10m
+linkerd-destination      1/1     1            1           10m
+linkerd-grafana          1/1     1            1           10m
+linkerd-identity         1/1     1            1           10m
+linkerd-prometheus       1/1     1            1           10m
+linkerd-proxy-injector   1/1     1            1           10m
+linkerd-sp-validator     1/1     1            1           10m
+linkerd-tap              1/1     1            1           10m
+linkerd-web              1/1     1            1           10m
+[centos@k8smaster ~]$
+
+
+
+helm install linkerd2 \
+  --set-file global.identityTrustAnchorsPEM=ca.crt \
+  --set-file identity.issuer.tls.crtPEM=issuer.crt \
+  --set-file identity.issuer.tls.keyPEM=issuer.key \
+  --set identity.issuer.crtExpiry=$exp \
+  --set global.cniEnabled=true\
+  linkerd/linkerd2

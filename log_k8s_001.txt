@@ -1,0 +1,194 @@
+
+
+
+TO SEND :
+
+[centos@k8master ~]$ kubectl get pods -A
+NAMESPACE              NAME                                           READY   STATUS    RESTARTS   AGE
+default                samplepod                                      1/1     Running   4          4d
+kube-system            coredns-74ff55c5b-5ch8m                        1/1     Running   6          4d21h
+kube-system            coredns-74ff55c5b-fpqrv                        1/1     Running   6          4d21h
+kube-system            etcd-k8master.pippolab.vr                      1/1     Running   11         4d21h
+kube-system            kube-apiserver-k8master.pippolab.vr            1/1     Running   10         4d21h
+kube-system            kube-controller-manager-k8master.pippolab.vr   1/1     Running   8          4d21h
+kube-system            kube-multus-ds-amd64-8k79k                     1/1     Running   5          4d
+kube-system            kube-multus-ds-amd64-s55p8                     1/1     Running   4          4d
+kube-system            kube-multus-ds-amd64-sdhl6                     1/1     Running   4          4d
+kube-system            kube-proxy-bsfjh                               1/1     Running   5          4d5h
+kube-system            kube-proxy-f57r9                               1/1     Running   5          4d5h
+kube-system            kube-proxy-n4xcs                               1/1     Running   7          4d21h
+kube-system            kube-scheduler-k8master.pippolab.vr            1/1     Running   8          4d21h
+kube-system            weave-net-4tnm2                                2/2     Running   11         4d5h
+kube-system            weave-net-7rbbl                                2/2     Running   12         4d5h
+kube-system            weave-net-lvffc                                2/2     Running   11         4d5h
+kubernetes-dashboard   dashboard-metrics-scraper-79c5968bdc-xwsvp     1/1     Running   2          2d22h
+kubernetes-dashboard   kubernetes-dashboard-7448ffc97b-g76q9          1/1     Running   2          2d22h
+kuma-demo              kuma-demo-app-6787b4f7f5-4r85p                 1/1     Running   2          2d21h
+kuma-demo              kuma-demo-backend-v0-56db47c579-hmh4f          1/1     Running   2          2d21h
+kuma-demo              postgres-master-645bc44fd-9lkh4                1/1     Running   2          2d21h
+kuma-demo              redis-master-55fd8f6f54-dkvhb                  1/1     Running   2          2d21h
+kuma-system            kuma-control-plane-6b54d7d844-khvtv            1/1     Running   7          2d22h
+
+[centos@k8master ~]$ kubectl version
+Client Version: version.Info{Major:"1", Minor:"20", GitVersion:"v1.20.2", GitCommit:"faecb196815e248d3ecfb03c680a4507229c2a56", GitTreeState:"clean", BuildDate:"2021-01-13T13:28:09Z", GoVersion:"go1.15.5", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"20", GitVersion:"v1.20.2", GitCommit:"faecb196815e248d3ecfb03c680a4507229c2a56", GitTreeState:"clean", BuildDate:"2021-01-13T13:20:00Z", GoVersion:"go1.15.5", Compiler:"gc", Platform:"linux/amd64"}
+[centos@k8master ~]$ kubectl config view
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: DATA+OMITTED
+    server: https://192.168.147.133:6443
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: kubernetes-admin@kubernetes
+kind: Config
+preferences: {}
+users:
+- name: kubernetes-admin
+  user:
+    client-certificate-data: REDACTED
+    client-key-data: REDACTED
+
+[centos@k8master ~]$ kubectl get all --all-namespaces
+NAMESPACE              NAME                                               READY   STATUS    RESTARTS   AGE
+default                pod/samplepod                                      1/1     Running   4          4d
+kube-system            pod/coredns-74ff55c5b-5ch8m                        1/1     Running   6          4d21h
+kube-system            pod/coredns-74ff55c5b-fpqrv                        1/1     Running   6          4d21h
+kube-system            pod/etcd-k8master.pippolab.vr                      1/1     Running   11         4d21h
+kube-system            pod/kube-apiserver-k8master.pippolab.vr            1/1     Running   10         4d21h
+kube-system            pod/kube-controller-manager-k8master.pippolab.vr   1/1     Running   8          4d21h
+kube-system            pod/kube-multus-ds-amd64-8k79k                     1/1     Running   5          4d
+kube-system            pod/kube-multus-ds-amd64-s55p8                     1/1     Running   4          4d
+kube-system            pod/kube-multus-ds-amd64-sdhl6                     1/1     Running   4          4d
+kube-system            pod/kube-proxy-bsfjh                               1/1     Running   5          4d5h
+kube-system            pod/kube-proxy-f57r9                               1/1     Running   5          4d5h
+kube-system            pod/kube-proxy-n4xcs                               1/1     Running   7          4d21h
+kube-system            pod/kube-scheduler-k8master.pippolab.vr            1/1     Running   8          4d21h
+kube-system            pod/weave-net-4tnm2                                2/2     Running   11         4d5h
+kube-system            pod/weave-net-7rbbl                                2/2     Running   12         4d5h
+kube-system            pod/weave-net-lvffc                                2/2     Running   11         4d5h
+kubernetes-dashboard   pod/dashboard-metrics-scraper-79c5968bdc-xwsvp     1/1     Running   2          2d22h
+kubernetes-dashboard   pod/kubernetes-dashboard-7448ffc97b-g76q9          1/1     Running   2          2d22h
+kuma-demo              pod/kuma-demo-app-6787b4f7f5-4r85p                 1/1     Running   2          2d21h
+kuma-demo              pod/kuma-demo-backend-v0-56db47c579-hmh4f          1/1     Running   2          2d21h
+kuma-demo              pod/postgres-master-645bc44fd-9lkh4                1/1     Running   2          2d21h
+kuma-demo              pod/redis-master-55fd8f6f54-dkvhb                  1/1     Running   2          2d21h
+kuma-system            pod/kuma-control-plane-6b54d7d844-khvtv            1/1     Running   8          2d22h
+
+NAMESPACE              NAME                                TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)
+                  AGE
+default                service/kubernetes                  ClusterIP   10.96.0.1        <none>        443/TCP
+                  4d21h
+kube-system            service/kube-dns                    ClusterIP   10.96.0.10       <none>        53/UDP,53/TCP,9153/TCP
+                  4d21h
+kubernetes-dashboard   service/dashboard-metrics-scraper   ClusterIP   10.103.37.13     <none>        8000/TCP
+                  2d22h
+kubernetes-dashboard   service/kubernetes-dashboard        ClusterIP   10.98.61.154     <none>        443/TCP
+                  2d22h
+kuma-demo              service/backend                     ClusterIP   10.103.29.110    <none>        3001/TCP
+                  2d21h
+kuma-demo              service/frontend                    ClusterIP   10.105.127.40    <none>        8080/TCP
+                  2d21h
+kuma-demo              service/postgres                    ClusterIP   10.101.158.76    <none>        5432/TCP
+                  2d21h
+kuma-demo              service/redis                       ClusterIP   10.99.239.247    <none>        6379/TCP
+                  2d21h
+kuma-system            service/kuma-control-plane          ClusterIP   10.107.214.142   <none>        5681/TCP,5682/TCP,443/TCP,5676/TCP,5678/TCP,5653/UDP   2d22h
+
+NAMESPACE     NAME                                    DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                AGE
+kube-system   daemonset.apps/kube-multus-ds-amd64     3         3         3       3            3           kubernetes.io/arch=amd64     4d
+kube-system   daemonset.apps/kube-multus-ds-arm64v8   0         0         0       0            0           kubernetes.io/arch=arm64     4d
+kube-system   daemonset.apps/kube-multus-ds-ppc64le   0         0         0       0            0           kubernetes.io/arch=ppc64le   4d
+kube-system   daemonset.apps/kube-proxy               3         3         3       3            3           kubernetes.io/os=linux       4d21h
+kube-system   daemonset.apps/weave-net                3         3         3       3            3           <none>                       4d5h
+
+NAMESPACE              NAME                                        READY   UP-TO-DATE   AVAILABLE   AGE
+kube-system            deployment.apps/coredns                     2/2     2            2           4d21h
+kubernetes-dashboard   deployment.apps/dashboard-metrics-scraper   1/1     1            1           2d22h
+kubernetes-dashboard   deployment.apps/kubernetes-dashboard        1/1     1            1           2d22h
+kuma-demo              deployment.apps/kuma-demo-app               1/1     1            1           2d21h
+kuma-demo              deployment.apps/kuma-demo-backend-v0        1/1     1            1           2d21h
+kuma-demo              deployment.apps/kuma-demo-backend-v1        0/0     0            0           2d21h
+kuma-demo              deployment.apps/kuma-demo-backend-v2        0/0     0            0           2d21h
+kuma-demo              deployment.apps/postgres-master             1/1     1            1           2d21h
+kuma-demo              deployment.apps/redis-master                1/1     1            1           2d21h
+kuma-system            deployment.apps/kuma-control-plane          1/1     1            1           2d22h
+
+NAMESPACE              NAME                                                   DESIRED   CURRENT   READY   AGE
+kube-system            replicaset.apps/coredns-74ff55c5b                      2         2         2       4d21h
+kubernetes-dashboard   replicaset.apps/dashboard-metrics-scraper-79c5968bdc   1         1         1       2d22h
+kubernetes-dashboard   replicaset.apps/kubernetes-dashboard-7448ffc97b        1         1         1       2d22h
+kuma-demo              replicaset.apps/kuma-demo-app-6787b4f7f5               1         1         1       2d21h
+kuma-demo              replicaset.apps/kuma-demo-backend-v0-56db47c579        1         1         1       2d21h
+kuma-demo              replicaset.apps/kuma-demo-backend-v1-79584cdc57        0         0         0       2d21h
+kuma-demo              replicaset.apps/kuma-demo-backend-v2-675df8cbff        0         0         0       2d21h
+kuma-demo              replicaset.apps/postgres-master-645bc44fd              1         1         1       2d21h
+kuma-demo              replicaset.apps/redis-master-55fd8f6f54                1         1         1       2d21h
+kuma-system            replicaset.apps/kuma-control-plane-6b54d7d844          1         1         1       2d22h
+
+
+
+
+[centos@k8master ~]$ kubectl get events
+LAST SEEN   TYPE      REASON                    OBJECT                      MESSAGE
+2d21h       Normal    Starting                  node/k8master.pippolab.vr   Starting kubelet.
+2d21h       Normal    NodeHasSufficientMemory   node/k8master.pippolab.vr   Node k8master.pippolab.vr status is now: NodeHasSufficientMemory
+2d21h       Normal    NodeHasNoDiskPressure     node/k8master.pippolab.vr   Node k8master.pippolab.vr status is now: NodeHasNoDiskPressure
+2d21h       Normal    NodeHasSufficientPID      node/k8master.pippolab.vr   Node k8master.pippolab.vr status is now: NodeHasSufficientPID
+2d21h       Normal    NodeAllocatableEnforced   node/k8master.pippolab.vr   Updated Node Allocatable limit across pods
+2d21h       Normal    Starting                  node/k8master.pippolab.vr   Starting kube-proxy.
+2d21h       Normal    RegisteredNode            node/k8master.pippolab.vr   Node k8master.pippolab.vr event: Registered Node k8master.pippolab.vr in Controller
+18m         Normal    Starting                  node/k8master.pippolab.vr   Starting kubelet.
+18m         Normal    NodeHasSufficientMemory   node/k8master.pippolab.vr   Node k8master.pippolab.vr status is now: NodeHasSufficientMemory
+18m         Normal    NodeHasNoDiskPressure     node/k8master.pippolab.vr   Node k8master.pippolab.vr status is now: NodeHasNoDiskPressure
+18m         Normal    NodeHasSufficientPID      node/k8master.pippolab.vr   Node k8master.pippolab.vr status is now: NodeHasSufficientPID
+18m         Normal    NodeAllocatableEnforced   node/k8master.pippolab.vr   Updated Node Allocatable limit across pods
+17m         Normal    RegisteredNode            node/k8master.pippolab.vr   Node k8master.pippolab.vr event: Registered Node k8master.pippolab.vr in Controller
+16m         Normal    Starting                  node/k8master.pippolab.vr   Starting kube-proxy.
+2d21h       Normal    Starting                  node/k8node1.pippolab.vr    Starting kubelet.
+2d21h       Normal    NodeHasSufficientMemory   node/k8node1.pippolab.vr    Node k8node1.pippolab.vr status is now: NodeHasSufficientMemory
+2d21h       Normal    NodeHasNoDiskPressure     node/k8node1.pippolab.vr    Node k8node1.pippolab.vr status is now: NodeHasNoDiskPressure
+2d21h       Normal    NodeHasSufficientPID      node/k8node1.pippolab.vr    Node k8node1.pippolab.vr status is now: NodeHasSufficientPID
+2d21h       Normal    NodeAllocatableEnforced   node/k8node1.pippolab.vr    Updated Node Allocatable limit across pods
+2d21h       Warning   Rebooted                  node/k8node1.pippolab.vr    Node k8node1.pippolab.vr has been rebooted, boot id: b2372b00-ba0a-4c12-a9ca-ccee4c289cdd
+2d21h       Normal    Starting                  node/k8node1.pippolab.vr    Starting kube-proxy.
+2d21h       Normal    RegisteredNode            node/k8node1.pippolab.vr    Node k8node1.pippolab.vr event: Registered Node k8node1.pippolab.vr in Controller
+18m         Normal    Starting                  node/k8node1.pippolab.vr    Starting kubelet.
+18m         Normal    NodeHasSufficientMemory   node/k8node1.pippolab.vr    Node k8node1.pippolab.vr status is now: NodeHasSufficientMemory
+18m         Normal    NodeHasNoDiskPressure     node/k8node1.pippolab.vr    Node k8node1.pippolab.vr status is now: NodeHasNoDiskPressure
+18m         Normal    NodeHasSufficientPID      node/k8node1.pippolab.vr    Node k8node1.pippolab.vr status is now: NodeHasSufficientPID
+18m         Normal    NodeAllocatableEnforced   node/k8node1.pippolab.vr    Updated Node Allocatable limit across pods
+17m         Normal    Starting                  node/k8node1.pippolab.vr    Starting kube-proxy.
+17m         Normal    RegisteredNode            node/k8node1.pippolab.vr    Node k8node1.pippolab.vr event: Registered Node k8node1.pippolab.vr in Controller
+2d21h       Normal    Starting                  node/k8node2                Starting kubelet.
+2d21h       Normal    NodeHasSufficientMemory   node/k8node2                Node k8node2 status is now: NodeHasSufficientMemory
+2d21h       Normal    NodeHasNoDiskPressure     node/k8node2                Node k8node2 status is now: NodeHasNoDiskPressure
+2d21h       Normal    NodeHasSufficientPID      node/k8node2                Node k8node2 status is now: NodeHasSufficientPID
+2d21h       Normal    NodeAllocatableEnforced   node/k8node2                Updated Node Allocatable limit across pods
+2d21h       Warning   Rebooted                  node/k8node2                Node k8node2 has been rebooted, boot id: e2110d82-6d45-4347-8eb5-6c480c88ba6b
+2d21h       Normal    Starting                  node/k8node2                Starting kube-proxy.
+2d21h       Normal    RegisteredNode            node/k8node2                Node k8node2 event: Registered Node k8node2 in Controller
+17m         Normal    Starting                  node/k8node2                Starting kubelet.
+17m         Normal    NodeHasSufficientMemory   node/k8node2                Node k8node2 status is now: NodeHasSufficientMemory
+17m         Normal    NodeHasNoDiskPressure     node/k8node2                Node k8node2 status is now: NodeHasNoDiskPressure
+17m         Normal    NodeHasSufficientPID      node/k8node2                Node k8node2 status is now: NodeHasSufficientPID
+17m         Warning   Rebooted                  node/k8node2                Node k8node2 has been rebooted, boot id: b605fb3f-8142-4333-b296-73e54cff45b8
+17m         Normal    NodeAllocatableEnforced   node/k8node2                Updated Node Allocatable limit across pods
+17m         Normal    RegisteredNode            node/k8node2                Node k8node2 event: Registered Node k8node2 in Controller
+17m         Normal    Starting                  node/k8node2                Starting kube-proxy.
+2d21h       Normal    SandboxChanged            pod/samplepod               Pod sandbox changed, it will be killed and re-created.
+2d21h       Normal    Pulling                   pod/samplepod               Pulling image "alpine"
+2d21h       Normal    Pulled                    pod/samplepod               Successfully pulled image "alpine" in 4.345739726s
+2d21h       Normal    Created                   pod/samplepod               Created container samplepod
+2d21h       Normal    Started                   pod/samplepod               Started container samplepod
+16m         Normal    SandboxChanged            pod/samplepod               Pod sandbox changed, it will be killed and re-created.
+16m         Normal    Pulling                   pod/samplepod               Pulling image "alpine"
+16m         Normal    Pulled                    pod/samplepod               Successfully pulled image "alpine" in 2.196286069s
+16m         Normal    Created                   pod/samplepod               Created container samplepod
+16m         Normal    Started                   pod/samplepod               Started container samplepod
+
+
